@@ -1,0 +1,294 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Catalogue</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f1f3f6;
+            margin: 0;
+            padding: 40px 15px;
+        }
+
+        .container {
+            max-width: 850px;
+            margin: auto;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        .filters {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        input, select {
+            padding: 12px;
+            border: 1px solid #aaa;
+            border-radius: 5px;
+            font-size: 15px;
+        }
+
+        input {
+            flex: 1;
+            min-width: 0;
+        }
+
+        select {
+            width: 180px;
+            background: white;
+        }
+
+        #count {
+            color: #555;
+            margin-bottom: 15px;
+        }
+
+        #products {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 18px;
+            background: #fff;
+            transition: 0.2s;
+        }
+
+        .card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+        }
+
+        .card h3 {
+            margin-top: 0;
+            color: #333;
+        }
+
+        .category {
+            display: inline-block;
+            background: #eee;
+            color: #555;
+            padding: 5px 9px;
+            border-radius: 15px;
+            font-size: 12px;
+        }
+
+        .price {
+            font-size: 17px;
+            font-weight: bold;
+            color: #222;
+            margin-bottom: 0;
+        }
+
+        @media(max-width: 550px) {
+
+            .filters {
+                flex-direction: column;
+            }
+
+            select {
+                width: 100%;
+            }
+
+            #products {
+                grid-template-columns: 1fr;
+            }
+
+            .container {
+                padding: 20px;
+            }
+
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h1>Product Catalogue</h1>
+
+        <div class="filters">
+
+            <input
+                type="text"
+                id="search"
+                placeholder="Search by name..."
+            >
+
+            <select id="category">
+
+                <option value="All">All categories</option>
+                <option value="Electronics">Electronics</option>
+                <option value="Stationery">Stationery</option>
+                <option value="Fashion">Fashion</option>
+
+            </select>
+
+        </div>
+
+        <p id="count"></p>
+
+        <div id="products"></div>
+
+    </div>
+
+    <script>
+
+        // Array of 8 product objects
+        const items = [
+
+            {
+                name: "Wireless Mouse",
+                category: "Electronics",
+                price: 799
+            },
+
+            {
+                name: "Bluetooth Speaker",
+                category: "Electronics",
+                price: 1999
+            },
+
+            {
+                name: "USB Cable",
+                category: "Electronics",
+                price: 199
+            },
+
+            {
+                name: "Notebook Pack",
+                category: "Stationery",
+                price: 249
+            },
+
+            {
+                name: "Gel Pen Set",
+                category: "Stationery",
+                price: 99
+            },
+
+            {
+                name: "Running Shoes",
+                category: "Fashion",
+                price: 2499
+            },
+
+            {
+                name: "Cotton T-Shirt",
+                category: "Fashion",
+                price: 599
+            },
+
+            {
+                name: "Backpack",
+                category: "Fashion",
+                price: 1299
+            }
+
+        ];
+
+        // Function to display products
+        function displayProducts() {
+
+            let searchText = document
+                .getElementById("search")
+                .value.toLowerCase();
+
+            let selectedCategory = document
+                .getElementById("category")
+                .value;
+
+            // Apply search and category filters
+            let filteredProducts = items.filter(function(product) {
+
+                let matchName = product.name
+                    .toLowerCase()
+                    .includes(searchText);
+
+                let matchCategory =
+                    selectedCategory === "All" ||
+                    product.category === selectedCategory;
+
+                return matchName && matchCategory;
+
+            });
+
+            // Update product count
+            let count = document.getElementById("count");
+
+            if (filteredProducts.length === 0) {
+
+                count.textContent = "No products found.";
+
+            } else {
+
+                count.textContent =
+                    "Showing " + filteredProducts.length +
+                    " of " + items.length + " products";
+
+            }
+
+            // Display product cards
+            let productContainer =
+                document.getElementById("products");
+
+            productContainer.innerHTML = "";
+
+            filteredProducts.forEach(function(product) {
+
+                let card = document.createElement("div");
+
+                card.className = "card";
+
+                card.innerHTML = `
+                    <h3>${product.name}</h3>
+                    <span class="category">
+                        ${product.category}
+                    </span>
+                    <p class="price">
+                        Rs. ${product.price}
+                    </p>
+                `;
+
+                productContainer.appendChild(card);
+
+            });
+
+        }
+
+        // Search while typing
+        document.getElementById("search")
+            .addEventListener("input", displayProducts);
+
+        // Filter when category changes
+        document.getElementById("category")
+            .addEventListener("change", displayProducts);
+
+        // Display all products initially
+        displayProducts();
+
+    </script>
+
+</body>
+</html>
