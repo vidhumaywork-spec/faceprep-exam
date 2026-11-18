@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My To-Do List</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f1f3f6;
+            margin: 0;
+            padding: 40px 15px;
+        }
+
+        .container {
+            max-width: 550px;
+            margin: auto;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        .input-area {
+            display: flex;
+            gap: 10px;
+        }
+
+        input {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid #aaa;
+            border-radius: 5px;
+            font-size: 15px;
+            min-width: 0;
+        }
+
+        button {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            background: #444;
+            color: white;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #222;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+            margin-top: 25px;
+        }
+
+        li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 5px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .task-text {
+            cursor: pointer;
+            flex: 1;
+            overflow-wrap: anywhere;
+        }
+
+        .completed {
+            text-decoration: line-through;
+            color: grey;
+        }
+
+        .delete-btn {
+            background: #555;
+        }
+
+        #count {
+            color: #555;
+            margin-top: 20px;
+        }
+
+        @media(max-width: 400px) {
+            .container {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h1>My To-Do List</h1>
+
+        <div class="input-area">
+            <input type="text" id="taskInput"
+                   placeholder="Enter a task">
+
+            <button id="addBtn">Add</button>
+        </div>
+
+        <ul id="taskList"></ul>
+
+        <p id="count">No tasks yet. Add one above!</p>
+
+    </div>
+
+    <script>
+        // Array to store tasks
+        let tasks = [];
+
+        const taskInput = document.getElementById("taskInput");
+        const taskList = document.getElementById("taskList");
+        const count = document.getElementById("count");
+
+        // Add a new task
+        function addTask() {
+
+            let text = taskInput.value.trim();
+
+            if (text === "") {
+                return;
+            }
+
+            tasks.push({
+                text: text,
+                done: false
+            });
+
+            taskInput.value = "";
+
+            displayTasks();
+            taskInput.focus();
+        }
+
+        // Add button click event
+        document.getElementById("addBtn").addEventListener("click", addTask);
+
+        // Add task using Enter key
+        taskInput.addEventListener("keydown", function(event) {
+
+            if (event.key === "Enter") {
+                addTask();
+            }
+
+        });
+
+        // Display all tasks
+        function displayTasks() {
+
+            taskList.innerHTML = "";
+
+            tasks.forEach(function(task, index) {
+
+                let li = document.createElement("li");
+
+                let span = document.createElement("span");
+
+                span.textContent = task.text;
+                span.className = "task-text";
+
+                if (task.done) {
+                    span.classList.add("completed");
+                }
+
+                // Toggle task completion
+                span.addEventListener("click", function() {
+
+                    tasks[index].done = !tasks[index].done;
+
+                    displayTasks();
+
+                });
+
+                // Delete button
+                let deleteBtn = document.createElement("button");
+
+                deleteBtn.textContent = "Delete";
+                deleteBtn.className = "delete-btn";
+
+                deleteBtn.addEventListener("click", function() {
+
+                    tasks.splice(index, 1);
+
+                    displayTasks();
+
+                });
+
+                li.appendChild(span);
+                li.appendChild(deleteBtn);
+
+                taskList.appendChild(li);
+
+            });
+
+            // Count remaining tasks
+            let remaining = tasks.filter(function(task) {
+                return !task.done;
+            }).length;
+
+            if (tasks.length === 0) {
+
+                count.textContent = "No tasks yet. Add one above!";
+
+            } else {
+
+                count.textContent =
+                    remaining + " of " + tasks.length + " tasks remaining";
+
+            }
+
+        }
+
+        displayTasks();
+
+    </script>
+
+</body>
+</html>
+
+
+
+
